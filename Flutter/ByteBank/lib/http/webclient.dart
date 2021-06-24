@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:bytebank/http/logging_interceptor.dart';
+import 'package:bytebank/models/contact.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 Future<void> findAll() async {
@@ -8,4 +11,13 @@ Future<void> findAll() async {
   ]);
 
   var response = await client.get(url);
+  final List<dynamic> json = jsonDecode(response.body);
+  final List<Transaction> transactions = [];
+
+  for (Map<String, dynamic> element in json) {
+    Transaction(
+        element['value'],
+        Contact(0, element['contact']['name'],
+            element['contact']['accountnNumber']));
+  }
 }
