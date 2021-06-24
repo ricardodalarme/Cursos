@@ -65,7 +65,7 @@ class _FeatureItem extends StatelessWidget {
   _FeatureItem(
     this.name,
     this.icon, {
-    @required this.onClick,
+    required this.onClick,
   });
 
   @override

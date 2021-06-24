@@ -1,9 +1,8 @@
-import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/models/transaction.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsList extends StatelessWidget {
-  final List<Transaction> transactions = List();
+  final List<Transaction> transactions = [];
 
   @override
   Widget build(BuildContext context) {
