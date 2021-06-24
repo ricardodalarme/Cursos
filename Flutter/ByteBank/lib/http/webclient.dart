@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bytebank/http/logging_interceptor.dart';
 import 'package:bytebank/models/contact.dart';
+import 'package:bytebank/models/transaction.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 Future<void> findAll() async {
