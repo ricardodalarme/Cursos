@@ -5,13 +5,12 @@ class Transaction {
   final Contact contact;
 
   Transaction(
-      this.value,
-      this.contact,
-      );
+    this.value,
+    this.contact,
+  );
 
   @override
   String toString() {
     return 'Transaction{value: $value, contact: $contact}';
   }
-
 }
