@@ -6,7 +6,6 @@ void main() {
 }
 
 class BytebankApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
