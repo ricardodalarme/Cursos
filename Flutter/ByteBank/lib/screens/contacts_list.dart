@@ -31,19 +31,22 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.active:
               break;
             case ConnectionState.done:
-              final contacts = snapshot.data;
+              final List<Contact> contacts = snapshot.data!;
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final Contact contact = contacts![index];
+                  final Contact contact = contacts[index];
                   return _ContactItem(
                     contact,
                     onClick: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TransactionForm(contact)));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TransactionForm(contact),
+                        ),
+                      );
                     },
                   );
                 },
-                itemCount: contacts!.length,
+                itemCount: contacts.length,
               );
           }
           return Text('Unknown error');
@@ -69,15 +72,18 @@ class _ContactsListState extends State<ContactsList> {
 
 class _ContactItem extends StatelessWidget {
   final Contact contact;
-  final Function() onClick;
+  final Function onClick;
 
-  _ContactItem(this.contact, {required this.onClick});
+  _ContactItem(
+    this.contact, {
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: onClick,
+        onTap: () => onClick(),
         title: Text(
           contact.name,
           style: TextStyle(
