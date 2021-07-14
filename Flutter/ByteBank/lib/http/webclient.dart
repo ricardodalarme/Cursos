@@ -7,4 +7,4 @@ final Client client = InterceptedClient.build(
   interceptors: [LoggingInterceptor()],
 );
 
-final Uri baseUrl = Uri.parse('http://192.168.20.249:8080/transactions');
+final Uri baseUrl = Uri.parse('http://192.168.0.106:8081/transactions');
