@@ -70,16 +70,7 @@ class _TransactionFormState extends State<TransactionForm> {
                         context: context,
                         builder: (context) => TransactionAuthDialog(
                           onConfirm: (password) {
-                            _webClient
-                                .save(transactionCreated, password)
-                                .then((transaction) {
-                              Navigator.pop(context);
-                            }).catchError((e) {
-                              showDialog(
-                                  context: context,
-                                  builder: (buildContext) =>
-                                      FailureDialog(e.message));
-                            });
+                            _save(transactionCreated, password, context);
                           },
                         ),
                       );
@@ -92,5 +83,25 @@ class _TransactionFormState extends State<TransactionForm> {
         ),
       ),
     );
+  }
+
+  void _save(Transaction transactionCreated, String password,
+      BuildContext context) async {
+    await _webClient.save(transactionCreated, password).catchError(
+      (e) {
+        showDialog(
+            context: context,
+            builder: (buildContext) => FailureDialog(e.message));
+      },
+      test: (e) => e is Exception,
+    );
+
+    await showDialog(
+        context: context,
+        builder: (contextBuilder) {
+          return SuccessDialog('Successful transaction');
+        });
+        
+    Navigator.pop(context);
   }
 }
