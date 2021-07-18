@@ -24,6 +24,13 @@ class TransactionWebClient {
         },
         body: transactionJson);
 
+    switch (response.statusCode) {
+      case 400:
+        throw Exception('There was an error submitting transaction');
+      case 401:
+        throw Exception('Authentification failed');
+    }
+    
     return Transaction.fromJson(jsonDecode(response.body));
   }
 }
