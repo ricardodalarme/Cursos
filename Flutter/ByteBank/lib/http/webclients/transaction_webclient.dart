@@ -11,8 +11,7 @@ class TransactionWebClient {
   };
 
   Future<List<Transaction>> findAll() async {
-    final Response response =
-        await client.get(baseUrl).timeout(Duration(seconds: 5));
+    final Response response = await client.get(baseUrl);
     final List<dynamic> decodedJson = jsonDecode(response.body);
     return decodedJson
         .map((dynamic json) => Transaction.fromJson(json))
@@ -29,11 +28,16 @@ class TransactionWebClient {
         },
         body: transactionJson);
 
-    switch (response.statusCode) {
-      case 200:
-        return Transaction.fromJson(jsonDecode(response.body));
-      default:
-        throw Exception(_statusCodeResponses[response.statusCode]);
+    if (response.statusCode == 200) {
+      return Transaction.fromJson(jsonDecode(response.body));
     }
+
+    throw HttpException(_statusCodeResponses[response.statusCode]!);
   }
+}
+
+class HttpException implements Exception {
+  final String message;
+
+  HttpException(this.message);
 }

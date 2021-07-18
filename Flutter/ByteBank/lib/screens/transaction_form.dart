@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
@@ -62,18 +64,19 @@ class _TransactionFormState extends State<TransactionForm> {
                   child: ElevatedButton(
                     child: Text('Transfer'),
                     onPressed: () {
-                      final double? value =
-                          double.tryParse(_valueController.text);
+                      final double value =
+                          double.tryParse(_valueController.text)!;
                       final transactionCreated =
-                          Transaction(value!, widget.contact);
+                          Transaction(value, widget.contact);
                       showDialog(
-                        context: context,
-                        builder: (context) => TransactionAuthDialog(
-                          onConfirm: (password) {
-                            _save(transactionCreated, password, context);
-                          },
-                        ),
-                      );
+                          context: context,
+                          builder: (contextDialog) {
+                            return TransactionAuthDialog(
+                              onConfirm: (String password) {
+                                _save(transactionCreated, password, context);
+                              },
+                            );
+                          });
                     },
                   ),
                 ),
@@ -85,23 +88,33 @@ class _TransactionFormState extends State<TransactionForm> {
     );
   }
 
-  void _save(Transaction transactionCreated, String password,
-      BuildContext context) async {
-    await _webClient.save(transactionCreated, password).catchError(
-      (e) {
-        showDialog(
-            context: context,
-            builder: (buildContext) => FailureDialog(e.message));
-      },
-      test: (e) => e is Exception,
-    );
+  void _save(
+    Transaction transactionCreated,
+    String password,
+    BuildContext context,
+  ) async {
+    final Transaction? transaction =
+        await _webClient.save(transactionCreated, password).catchError((e) {
+      showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return FailureDialog(e.message);
+          });
+    }, test: (e) => e is HttpException).catchError((e) {
+      showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return FailureDialog('Timeout submitting the transaction');
+          });
+    }, test: (e) => e is TimeoutException);
 
-    await showDialog(
-        context: context,
-        builder: (contextBuilder) {
-          return SuccessDialog('Successful transaction');
-        });
-        
-    Navigator.pop(context);
+    if (transaction != null) {
+      await showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return SuccessDialog('successful transaction');
+          });
+      Navigator.pop(context);
+    }
   }
 }
