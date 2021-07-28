@@ -49,13 +49,13 @@ class _ContactFormState extends State<ContactForm> {
               padding: const EdgeInsets.only(top: 16.0),
               child: SizedBox(
                 width: double.maxFinite,
-                child: ElevatedButton(
+                child: RaisedButton(
                   child: Text('Create'),
                   onPressed: () {
                     final String name = _nameController.text;
-                    final int? accountNumber =
+                    final int accountNumber =
                         int.tryParse(_accountNumberController.text);
-                    final Contact newContact = Contact(0, name, accountNumber!);
+                    final Contact newContact = Contact(0, name, accountNumber);
                     _dao.save(newContact).then((id) => Navigator.pop(context));
                   },
                 ),
